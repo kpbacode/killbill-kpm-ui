@@ -15,5 +15,9 @@ require 'killbill_client'
 module KPM
   class Engine < ::Rails::Engine
     isolate_namespace KPM
+
+    ActiveSupport::Inflector.inflections do |inflect|
+      inflect.acronym 'KPM'
+    end
   end
 end

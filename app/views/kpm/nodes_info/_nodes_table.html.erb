@@ -1,0 +1,91 @@
+<table id="nodes-table" class="table table-condensed table-striped mobile-data">
+  <thead>
+  <tr>
+    <th>Node name</th>
+    <th>Startup time</th>
+    <th>Updated date</th>
+    <th>KB version</th>
+    <th>Dependencies version</th>
+    <th>Plugins</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% nodes_info.each do |node_info| %>
+      <tr>
+        <td><%= node_info.node_name %></td>
+        <td><%= node_info.boot_time %></td>
+        <td><%= node_info.last_updated_date %></td>
+        <td><%= node_info.kb_version %></td>
+        <td>
+          <ul>
+            <li>API: <%= node_info.api_version %></li>
+            <li>Plugin API: <%= node_info.plugin_api_version %></li>
+            <li>Platform: <%= node_info.platform_version %></li>
+            <li>Commons: <%= node_info.common_version %></li>
+          </ul>
+        </td>
+        <td>
+          <% unless (node_info.plugins_info || []).empty? %>
+              <ul>
+                <% node_info.plugins_info.each do |plugin_info| %>
+                    <li>
+                      <%= plugin_info.plugin_name %> v<%= plugin_info.version %> (<%= plugin_info.state %>)
+                      <% if plugin_info.state == 'RUNNING' %>
+                          <%= link_to '<i class="fa fa-pause"></i>'.html_safe, plugin_stop_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
+                          <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                      <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
+                          <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
+                      <% end %>
+                      <%= link_to '<i class="fa fa-eject"></i>'.html_safe, plugin_uninstall_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
+                    </li>
+                <% end %>
+              </ul>
+          <% end %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    $('#nodes-table').dataTable({
+      "dom": "t",
+      "paging": false,
+      "columns": [
+        null,
+        null,
+        null,
+        null,
+        { "orderable": false },
+        { "orderable": false }
+      ]
+    });
+
+    var timer = setTimeout(refreshNodesInfo, 1500);
+
+    $('.plugin-link').one('ajax:beforeSend', function() {
+      // Disable the refresh
+      clearTimeout(timer);
+
+      // Prevent other clicks
+      $('.plugin-link').removeAttr('data-remote')
+                       .removeAttr('data-method')
+                       .removeAttr('href')
+
+      // Spin
+      $(this).children().addClass('fa-spin');
+    });
+
+    $('.plugin-link').one('ajax:complete', function() {
+      // Delay a bit, to give time for the plugin state to change before the next refresh
+      setTimeout(refreshNodesInfo, 4000);
+    });
+  });
+
+  function refreshNodesInfo() {
+    $.ajax({
+      url: "<%= nodes_info_index_path(:format => :js) %>"
+    });
+  }
+<% end %>
