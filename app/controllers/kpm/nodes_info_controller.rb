@@ -1,5 +1,3 @@
-require 'kpm/client'
-
 module KPM
   class NodesInfoController < EngineController
 
@@ -30,7 +28,9 @@ module KPM
       command_properties = [
           build_node_command_property('forceDownload', params[:force_download] == '1')
       ]
-      trigger_node_command('INSTALL_PLUGIN', command_properties)
+      trigger_node_plugin_command('INSTALL_PLUGIN', command_properties)
+
+      redirect_to :action => :index
     end
 
     def uninstall_plugin
@@ -84,17 +84,6 @@ module KPM
       property.key = key
       property.value = value
       property
-    end
-
-    def options_for_klient
-      user = current_tenant_user
-      {
-          :username => user[:username],
-          :password => user[:password],
-          :session_id => user[:session_id],
-          :api_key => user[:api_key],
-          :api_secret => user[:api_secret]
-      }
     end
 
     def osgi_bundle?(plugin_info)

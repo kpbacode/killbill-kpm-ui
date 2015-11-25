@@ -3,6 +3,7 @@ KPM::Engine.routes.draw do
   root to: 'nodes_info#index'
 
   resources :nodes_info, :only => [:index]
+  resources :plugins, :only => [:index]
 
   scope '/nodes_info' do
     match '/plugin/install' => 'nodes_info#install_plugin', :via => :post, :as => 'plugin_install'
