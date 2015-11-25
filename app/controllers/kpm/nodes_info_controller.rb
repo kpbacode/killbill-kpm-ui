@@ -6,6 +6,20 @@ module KPM
     def index
       @nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
 
+      # For convenience, put pure OSGI bundles at the bottom
+      @nodes_info.each do |node_info|
+        next if node_info.plugins_info.nil?
+        node_info.plugins_info.sort! do |a, b|
+          if osgi_bundle?(a) && !osgi_bundle?(b)
+            1
+          elsif !osgi_bundle?(a) && osgi_bundle?(b)
+            -1
+          else
+            a.plugin_name <=> b.plugin_name
+          end
+        end
+      end
+
       respond_to do |format|
         format.html
         format.js
@@ -81,6 +95,10 @@ module KPM
           :api_key => user[:api_key],
           :api_secret => user[:api_secret]
       }
+    end
+
+    def osgi_bundle?(plugin_info)
+      plugin_info.version.blank? || plugin_info.plugin_name.starts_with?('org.apache.felix.') || plugin_info.plugin_name.starts_with?('org.kill-bill.billing.killbill-platform-')
     end
   end
 end
