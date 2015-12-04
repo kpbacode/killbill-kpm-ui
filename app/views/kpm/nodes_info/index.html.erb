@@ -8,6 +8,42 @@
       <%= render :partial => 'kpm/nodes_info/nodes_table', :locals => {:nodes_info => @nodes_info} %>
     </div>
 
+    <h1>Logs</h1>
+
+    <div id="logs-table-wrapper">
+      <%= render :partial => 'kpm/nodes_info/logs_table', :locals => {:logs => @logs} %>
+    </div>
+
   </div>
 
 </div>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    var timer = setTimeout(refreshAll, 1500);
+
+    $('.plugin-link').one('ajax:beforeSend', function() {
+      // Disable the refresh
+      clearTimeout(timer);
+
+      // Prevent other clicks
+      $('.plugin-link').removeAttr('data-remote')
+                       .removeAttr('data-method')
+                       .removeAttr('href')
+
+      // Spin
+      $(this).children().addClass('fa-spin');
+    });
+
+    $('.plugin-link').one('ajax:complete', function() {
+      // Delay a bit, to give time for the plugin state to change before the next refresh
+      setTimeout(refreshAll, 6000);
+    });
+  });
+
+  function refreshAll() {
+    $.ajax({
+      url: "<%= nodes_info_index_path(:format => :js) %>"
+    });
+  }
+<% end %>

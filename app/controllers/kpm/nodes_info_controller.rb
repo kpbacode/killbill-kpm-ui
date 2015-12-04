@@ -1,3 +1,5 @@
+require 'kpm/client'
+
 module KPM
   class NodesInfoController < EngineController
 
@@ -17,6 +19,8 @@ module KPM
           end
         end
       end
+
+      @logs = ::Killbill::KPM::KPMClient.get_osgi_logs(options_for_klient).reverse
 
       respond_to do |format|
         format.html
