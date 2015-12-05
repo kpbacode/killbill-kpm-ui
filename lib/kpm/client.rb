@@ -8,9 +8,9 @@ module Killbill
 
       class << self
 
-        def get_available_plugins(options = {})
+        def get_available_plugins(latest=true, options = {})
           path = "#{KILLBILL_KPM_PREFIX}/plugins"
-          response = KillBillClient::API.get path, {}, options
+          response = KillBillClient::API.get path, { :latest => latest }, options
           JSON.parse(response.body)
         end
 
