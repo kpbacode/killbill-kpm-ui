@@ -12,12 +12,20 @@
       <tr>
         <td>
           <% unless log['time'].blank? %>
-              <%=DateTime.strptime(log['time'].to_s, '%Q').strftime('%Y-%m-%d %H:%M:%S') %>
+              <%= DateTime.strptime(log['time'].to_s, '%Q').strftime('%Y-%m-%d %H:%M:%S') %>
           <% end %>
         </td>
         <td><%= log['name'] %></td>
-        <td><%= log['level'] %></td>
-        <td><%= log['message'] %></td>
+        <td>
+          <% if log['level'] == 'ERROR' %>
+              <span class="label label-danger"><%= log['level'] %></span>
+          <% elsif log['level'] == 'WARNING' %>
+              <span class="label label-warning"><%= log['level'] %></span>
+          <% else %>
+              <span class="label label-success"><%= log['level'] %></span>
+          <% end %>
+        </td>
+        <td><pre><%= log['message'] %></pre></td>
       </tr>
   <% end %>
   </tbody>
