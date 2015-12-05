@@ -20,7 +20,16 @@
 
 <%= javascript_tag do %>
   $(document).ready(function() {
+    scheduleRefresh();
+  });
+
+  function scheduleRefresh() {
     var timer = setTimeout(refreshAll, 1500);
+
+    // Stop refreshing when user clicks through logs
+    $('#logs-table_wrapper a').one('click', function() {
+      clearTimeout(timer);
+    });
 
     $('.plugin-link').one('ajax:beforeSend', function() {
       // Disable the refresh
@@ -39,7 +48,7 @@
       // Delay a bit, to give time for the plugin state to change before the next refresh
       setTimeout(refreshAll, 6000);
     });
-  });
+  }
 
   function refreshAll() {
     $.ajax({

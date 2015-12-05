@@ -64,31 +64,5 @@
       "paging": false,
       "ordering": false
     });
-
-    var timer = setTimeout(refreshNodesInfo, 1500);
-
-    $('.plugin-link').one('ajax:beforeSend', function() {
-      // Disable the refresh
-      clearTimeout(timer);
-
-      // Prevent other clicks
-      $('.plugin-link').removeAttr('data-remote')
-                       .removeAttr('data-method')
-                       .removeAttr('href')
-
-      // Spin
-      $(this).children().addClass('fa-spin');
-    });
-
-    $('.plugin-link').one('ajax:complete', function() {
-      // Delay a bit, to give time for the plugin state to change before the next refresh
-      setTimeout(refreshNodesInfo, 6000);
-    });
   });
-
-  function refreshNodesInfo() {
-    $.ajax({
-      url: "<%= nodes_info_index_path(:format => :js) %>"
-    });
-  }
 <% end %>
