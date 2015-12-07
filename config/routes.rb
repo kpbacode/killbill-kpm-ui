@@ -7,6 +7,7 @@ KPM::Engine.routes.draw do
 
   scope '/nodes_info' do
     match '/plugin/install' => 'nodes_info#install_plugin', :via => :post, :as => 'plugin_install'
+    match '/plugin/install_from_fs' => 'nodes_info#install_plugin_from_fs', :via => :post, :as => 'plugin_install_from_fs'
     match '/plugin/uninstall' => 'nodes_info#uninstall_plugin', :via => :post, :as => 'plugin_uninstall'
     match '/plugin/start' => 'nodes_info#start_plugin', :via => :post, :as => 'plugin_start'
     match '/plugin/stop' => 'nodes_info#stop_plugin', :via => :post, :as => 'plugin_stop'

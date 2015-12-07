@@ -37,6 +37,17 @@ module KPM
       redirect_to :action => :index
     end
 
+    def install_plugin_from_fs
+      ::Killbill::KPM::KPMClient.install_plugin(params.require(:name),
+                                                params.require(:version),
+                                                params.require(:type),
+                                                params.require(:plugin).original_filename,
+                                                params.require(:plugin).read,
+                                                options_for_klient)
+
+      redirect_to :action => :index
+    end
+
     def uninstall_plugin
       trigger_node_plugin_command('UNINSTALL_PLUGIN')
       render :nothing => true
