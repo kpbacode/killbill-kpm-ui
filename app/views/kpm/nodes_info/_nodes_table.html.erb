@@ -39,13 +39,13 @@
                     <li>
                       <%= plugin_info.plugin_name %> <%= plugin_info.version %> <span class="label label-<%= plugin_info.state == 'RUNNING' ? 'success' : (plugin_info.state == 'INSTALLED' ? 'warning' : 'danger') %>"><%= plugin_info.state %></span>
                       <% if plugin_info.state == 'RUNNING' %>
-                          <%= link_to '<i class="fa fa-pause"></i>'.html_safe, plugin_stop_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
-                          <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                          <%= link_to '<i class="fa fa-pause"></i>'.html_safe, plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
+                          <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
                       <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
-                          <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
+                          <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
                       <% end %>
                       <% unless plugin_info.version.nil? %>
-                          <%= link_to '<i class="fa fa-eject"></i>'.html_safe, plugin_uninstall_path(:plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
+                          <%= link_to '<i class="fa fa-eject"></i>'.html_safe, plugin_uninstall_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
                       <% end %>
                     </li>
                 <% end %>

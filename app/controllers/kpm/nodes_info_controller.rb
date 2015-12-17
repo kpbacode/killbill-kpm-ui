@@ -70,9 +70,10 @@ module KPM
 
     private
 
-    def trigger_node_plugin_command(command_type, command_properties=[], plugin_name=nil, plugin_version=nil)
-      command_properties << build_node_command_property('pluginName', plugin_name || params.require(:plugin_name))
-      command_properties << build_node_command_property('pluginVersion', plugin_version || params[:plugin_version])
+    def trigger_node_plugin_command(command_type, command_properties=[])
+      command_properties << build_node_command_property('pluginKey', params[:plugin_key])
+      command_properties << build_node_command_property('pluginName', params[:plugin_name])
+      command_properties << build_node_command_property('pluginVersion', params[:plugin_version])
 
       trigger_node_command(command_type, command_properties)
     end
