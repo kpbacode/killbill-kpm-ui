@@ -38,7 +38,7 @@ module KPM
     end
 
     def install_plugin_from_fs
-      ::Killbill::KPM::KPMClient.install_plugin(params.require(:name),
+      ::Killbill::KPM::KPMClient.install_plugin(params.require(:key),
                                                 params.require(:version),
                                                 params.require(:type),
                                                 params.require(:plugin).original_filename,

@@ -19,9 +19,9 @@ module Killbill
           JSON.parse(response.body)
         end
 
-        def install_plugin(name, version, type, filename, plugin, options = {})
+        def install_plugin(key, version, type, filename, plugin, options = {})
           path = "#{KILLBILL_KPM_PREFIX}/plugins"
-          KillBillClient::API.post path, plugin, {:name => name, :version => version, :type => type, :filename => filename}, options.merge(:content_type => 'application/octet-stream')
+          KillBillClient::API.post path, plugin, {:key => key, :version => version, :type => type, :filename => filename}, options.merge(:content_type => 'application/octet-stream')
         end
       end
 
