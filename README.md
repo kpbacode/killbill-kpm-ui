@@ -12,3 +12,19 @@ Kill Bill compatibility
 | -------------: | ----------------: |
 | 0.1.y          | 0.16.z            |
 | 0.2.y          | 0.18.z            |
+
+Testing
+-------
+
+To run the dummy app:
+
+```
+rails s
+```
+
+
+To run tests:
+
+```
+rails t
+```

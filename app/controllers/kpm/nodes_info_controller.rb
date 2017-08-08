@@ -50,22 +50,22 @@ module KPM
 
     def uninstall_plugin
       trigger_node_plugin_command('UNINSTALL_PLUGIN')
-      render :nothing => true
+      head :ok
     end
 
     def start_plugin
       trigger_node_plugin_command('START_PLUGIN')
-      render :nothing => true
+      head :ok
     end
 
     def stop_plugin
       trigger_node_plugin_command('STOP_PLUGIN')
-      render :nothing => true
+      head :ok
     end
 
     def restart_plugin
       trigger_node_plugin_command('RESTART_PLUGIN')
-      render :nothing => true
+      head :ok
     end
 
     private

@@ -10,15 +10,11 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require js-routes
-//= require moment
 //= require spin
 //= require jquery
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-//= require d3
-//= require bootstrap-datepicker
 //= require jquery.spin
 //= require kpm/kpm
