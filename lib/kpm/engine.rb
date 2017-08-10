@@ -8,7 +8,6 @@ require 'jquery-rails'
 require 'jquery-datatables-rails'
 require 'font-awesome-rails'
 require 'twitter-bootstrap-rails'
-require 'spinjs-rails'
 require 'killbill_client'
 
 module KPM
