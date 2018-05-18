@@ -5,7 +5,7 @@ require 'kpm/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'killbill-kpm'
+  s.name        = 'killbill-kpm-ui'
   s.version     = KPM::VERSION
   s.authors     = 'Kill Bill core team'
   s.email       = 'killbilling-users@googlegroups.com'
