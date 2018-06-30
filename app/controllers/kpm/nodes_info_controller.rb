@@ -80,7 +80,7 @@ module KPM
 
     def trigger_node_command(command_type, command_properties=[])
       node_command = ::KillBillClient::Model::NodeCommandAttributes.new
-      node_command.system_command_type = true
+      node_command.is_system_command_type = true
       node_command.node_command_type = command_type
       node_command.node_command_properties = command_properties
 
