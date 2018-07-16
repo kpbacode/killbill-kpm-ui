@@ -1,41 +1,45 @@
-<table id="plugins-table" class="table table-condensed table-striped mobile-data">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Versions</th>
-    <th>Required configuration</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <% plugins.each do |name, details| %>
-      <tr>
-        <td><%= name %></td>
-        <td><%= details['type'] %></td>
-        <td>
-          <% unless details['versions'].nil? %>
-              <ul>
-                <% details['versions'].each do |kb_version, plugin_version| %>
-                    <li><%= kb_version %>: <%= plugin_version %></li>
+<% if @warning_message.blank? %>
+  <table id="plugins-table" class="table table-condensed table-striped mobile-data">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Versions</th>
+      <th>Required configuration</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% plugins.each do |name, details| %>
+        <tr>
+          <td><%= name %></td>
+          <td><%= details['type'] %></td>
+          <td>
+            <% unless details['versions'].nil? %>
+              <% details['versions'].each do |kb_version, plugin_version| %>
+                <% if kb_version.eql?(@kb_version) %>
+                  &ensp;<%= plugin_version %>
                 <% end %>
-              </ul>
-          <% end %>
-        </td>
-        <td>
-          <% unless (details['require'] || []).empty? %>
-              <ul>
-                <% details['require'].each do |property| %>
-                    <li><%= property %></li>
-                <% end %>
-              </ul>
-          <% end %>
-        </td>
-        <td><%= link_to '<i class="fa fa-cloud-download"></i>'.html_safe, plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
+              <% end %>
+            <% end %>
+          </td>
+          <td>
+            <% unless (details['require'] || []).empty? %>
+                <ul>
+                  <% details['require'].each do |property| %>
+                      <li><%= property %></li>
+                  <% end %>
+                </ul>
+            <% end %>
+          </td>
+          <td><%= link_to '<i class="fa fa-cloud-download"></i>'.html_safe, plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-warning" role="alert"><%= @warning_message.html_safe %></div>
+<% end %>
 
 <%= javascript_tag do %>
   $(document).ready(function() {
