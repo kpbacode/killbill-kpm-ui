@@ -25,7 +25,7 @@ module KPM
     private
 
     def different_versions_warning_message(nodes_by_kb_version)
-      message = '<b>Warning!</b>, different versions of Kill Bill where found:<ul>'
+      message = '<b>Warning!</b> Unable to find plugins to install, different versions of Kill Bill were found:<ul>'
       nodes_by_kb_version.each do |version, node_name|
         message = "#{message} <li><b>#{version}:</b> #{node_name}</li>"
       end
