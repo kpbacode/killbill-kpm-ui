@@ -2,6 +2,7 @@ require 'kpm/client'
 
 module KPM
   class NodesInfoController < EngineController
+    include ActionController::Live
 
     def index
       @nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
@@ -19,12 +20,30 @@ module KPM
           end
         end
       end
+    end
 
-      @logs = ::Killbill::KPM::KPMClient.get_osgi_logs(options_for_klient).reverse
+    def refresh
+      response.headers["Content-Type"] = "text/event-stream"
 
-      respond_to do |format|
-        format.html
-        format.js
+      sse = nil
+      sse_client = nil
+      begin
+        # Kaui -> Browser
+        sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => "refresh")
+
+        # Kill Bill -> Kaui
+        t = Thread.new do
+          sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse)
+          # Busy loop to keep the thread alive
+          loop { sse.write('heartbeat'); sleep 5 }
+        end
+        # Force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
+        Timeout::timeout(30) { t.join }
+      rescue Timeout::Error, ActionController::Live::ClientDisconnected
+        # ignored
+      ensure
+        sse_client.close unless sse_client.nil?
+        sse.close unless sse.nil?
       end
     end
 
@@ -70,7 +89,7 @@ module KPM
 
     private
 
-    def trigger_node_plugin_command(command_type, command_properties=[])
+    def trigger_node_plugin_command(command_type, command_properties = [])
       command_properties << build_node_command_property('pluginKey', params[:plugin_key])
       command_properties << build_node_command_property('pluginName', params[:plugin_name])
       command_properties << build_node_command_property('pluginVersion', params[:plugin_version])
@@ -78,7 +97,7 @@ module KPM
       trigger_node_command(command_type, command_properties)
     end
 
-    def trigger_node_command(command_type, command_properties=[])
+    def trigger_node_command(command_type, command_properties = [])
       node_command = ::KillBillClient::Model::NodeCommandAttributes.new
       node_command.is_system_command_type = true
       node_command.node_command_type = command_type

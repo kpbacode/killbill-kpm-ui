@@ -6,6 +6,7 @@ KPM::Engine.routes.draw do
   resources :plugins, :only => [:index]
 
   scope '/nodes_info' do
+    match '/refresh' => 'nodes_info#refresh', :via => :get, :as => 'nodes_info_refresh'
     match '/plugin/install' => 'nodes_info#install_plugin', :via => :post, :as => 'plugin_install'
     match '/plugin/install_from_fs' => 'nodes_info#install_plugin_from_fs', :via => :post, :as => 'plugin_install_from_fs'
     match '/plugin/uninstall' => 'nodes_info#uninstall_plugin', :via => :post, :as => 'plugin_uninstall'

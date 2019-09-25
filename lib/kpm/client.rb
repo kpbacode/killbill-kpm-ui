@@ -1,3 +1,5 @@
+require 'ld-eventsource'
+
 module Killbill
   module KPM
 
@@ -14,9 +16,12 @@ module Killbill
           JSON.parse(response.body)
         end
 
-        def get_osgi_logs(options = {})
-          response = KillBillClient::API.get KILLBILL_OSGI_LOGGER_PREFIX, {}, options
-          JSON.parse(response.body)
+        def stream_osgi_logs(writer, options = {})
+          SSE::Client.new(KillBillClient::API.base_uri + KILLBILL_OSGI_LOGGER_PREFIX) do |client|
+            client.on_event do |event|
+              writer.write(event.data)
+            end
+          end
         end
 
         def install_plugin(key, version, type, filename, plugin, options = {})
