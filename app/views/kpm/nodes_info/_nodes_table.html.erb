@@ -33,8 +33,11 @@
                     <li>
                       <%= plugin_info.plugin_name %> <%= plugin_info.version %> <span class="label label-<%= plugin_info.state == 'RUNNING' ? 'success' : (plugin_info.state == 'INSTALLED' ? 'warning' : 'danger') %>"><%= plugin_info.state %></span>
                       <% if plugin_info.state == 'RUNNING' %>
+                        <%-# If there is not plugin_key, this is most likely a pure OSGI bundle. In that case, we don't want to allow stopping it as we would lose track of it (once it's removed from the OSGI bundle registry, we don't know about it anymore) -%>
+                        <% unless plugin_info.plugin_key.nil? %>
                           <%= link_to '<i class="fa fa-pause"></i>'.html_safe, plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
-                          <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                        <% end %>
+                        <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
                       <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
                           <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
                       <% end %>

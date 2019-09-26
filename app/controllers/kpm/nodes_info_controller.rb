@@ -34,7 +34,7 @@ module KPM
         # Kill Bill -> Kaui
         t = Thread.new do
           sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse)
-          # Busy loop to keep the thread alive
+          # Busy loop to keep the thread alive (Kill Bill should send us a heartbeat as well though)
           loop { sse.write('heartbeat'); sleep 5 }
         end
         # Force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
