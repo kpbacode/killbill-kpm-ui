@@ -2,7 +2,9 @@
 
   <div class="column-block">
 
-    <h1>Configured instances</h1>
+    <h1>Configured instances
+      <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style =>"display: none;") %>
+    </h1>
 
     <div id="nodes-table-wrapper">
       <%= render :partial => 'kpm/nodes_info/nodes_table', :locals => {:nodes_info => @nodes_info} %>
@@ -40,5 +42,15 @@
       // Spin
       $(this).children().addClass('fa-spin');
     });
+    $('.plugin-link').one('ajax:complete', function() {
+      // Delay a bit, to give time for the plugin state to change before the next refresh
+      setTimeout(fakeOperationComplete, 6000);
+    });
+
+    function fakeOperationComplete() {
+      $('.plugin-link').children().removeClass('fa-spin');
+      $('#nodes-table-wrapper').fadeTo("slow", 0.5);
+      $('#reload-page').fadeIn("slow");
+    }
   });
 <% end %>
