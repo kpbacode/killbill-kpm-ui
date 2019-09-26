@@ -2,7 +2,6 @@
   <thead>
   <tr>
     <th>Time</th>
-    <th>Name</th>
     <th>Level</th>
     <th>Message</th>
   </tr>
@@ -14,6 +13,11 @@
 <%= javascript_tag do %>
   $(document).ready(function() {
     $('#logs-table').dataTable({
+      "columns": [
+        { "width": "165px" }, /* ISO String is constant in width */
+        { "width": "60px" },  /* Log levels are bounded in width */
+        null,
+      ],
       "dom": "<'row'r>t<'row'<'col-md-6'><'col-md-6'>>",
       "ordering": false
     });

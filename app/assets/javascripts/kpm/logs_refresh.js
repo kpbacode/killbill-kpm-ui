@@ -9,8 +9,7 @@ function refreshLogLine(log) {
     var newDate = new Date();
     newDate.setTime(log['time']);
     var newRow = $('<tr>')
-        .append($('<td>').text(newDate.toUTCString()))
-        .append($('<td>').text(log['name'] === null ? '' : log['name']))
+        .append($('<td>').text(newDate.toISOString()))
         .append($('<td>')
             .append($('<span>')
                 .attr('class', 'label label-' + levelLabel)

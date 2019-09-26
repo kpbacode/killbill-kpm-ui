@@ -1,9 +1,8 @@
 <table id="nodes-table" class="table table-condensed table-striped mobile-data">
   <thead>
   <tr>
-    <th>Node name</th>
-    <th>Boot time</th>
-    <th>Updated date</th>
+    <th>Node</th>
+    <th>Uptime</th>
     <th>Kill Bill version</th>
     <th>Dependencies</th>
     <th>Plugins</th>
@@ -15,12 +14,7 @@
         <td><%= node_info.node_name %></td>
         <td>
           <% unless node_info.boot_time.blank? %>
-              <%= time_ago_in_words(DateTime.parse(node_info.boot_time)) %> ago
-          <% end %>
-        </td>
-        <td>
-          <% unless node_info.last_updated_date.blank? %>
-              <%= time_ago_in_words(DateTime.parse(node_info.last_updated_date)) %> ago
+              <%= time_ago_in_words(DateTime.parse(node_info.boot_time)) %>
           <% end %>
         </td>
         <td><%= node_info.kb_version %></td>

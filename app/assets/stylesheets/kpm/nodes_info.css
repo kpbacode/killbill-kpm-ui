@@ -1,0 +1,19 @@
+#nodes-table th:first-of-type,
+#nodes-table td:first-of-type,
+#logs-table th:first-of-type,
+#logs-table td:first-of-type {
+    padding-left: 8px;
+}
+
+#nodes-table ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#logs-table pre {
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
