@@ -32,18 +32,36 @@ module KPM
         sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => "refresh")
 
         # Kill Bill -> Kaui
-        t = Thread.new do
-          sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse)
-          # Busy loop to keep the thread alive (Kill Bill should send us a heartbeat as well though)
-          loop { sse.write('heartbeat'); sleep 5 }
+        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse)
+
+        i = 0
+        # We force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
+        while i < 6 # 30s
+          i += 1
+          # Keep the thread alive (Kill Bill should send us a heartbeat as well though)
+          sse.write('heartbeat')
+          sleep 5
         end
-        # Force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
-        Timeout::timeout(30) { t.join }
-      rescue Timeout::Error, ActionController::Live::ClientDisconnected
+      rescue ActionController::Live::ClientDisconnected
         # ignored
       ensure
-        sse_client.close unless sse_client.nil?
-        sse.close unless sse.nil?
+        begin
+          begin
+            sse_client.close unless sse_client.nil?
+          rescue
+            # ignored
+          end
+          sse.close unless sse.nil?
+        ensure
+          # Clear dead DB connections
+          # Very lame, but I couldn't do better... Rails will checkout a DB connection
+          # whenever a new Thread is spawn and ActiveRecord::Base.clear_active_connections!
+          # didn't seem to do the trick: the number of active and dead connections kept growing:
+          #     connections = ActiveRecord::Base.connection_pool.instance_eval { @connections }
+          #     busy = connections.count { |c| c.in_use? }
+          #     dead = connections.count { |c| c.in_use? && !c.owner.alive? }
+          ActiveRecord::Base.connection_pool.reap
+        end
       end
     end
 
