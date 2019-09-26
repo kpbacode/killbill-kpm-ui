@@ -9,6 +9,7 @@
   </tr>
   </thead>
   <tbody>
+  <%- has_kpm_plugin = is_kpm_plugin_installed?(nodes_info) %>
   <% nodes_info.each do |node_info| %>
       <tr>
         <td><%= node_info.node_name %></td>
@@ -41,7 +42,7 @@
                       <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
                           <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
                       <% end %>
-                      <% unless plugin_info.version.nil? %>
+                      <% if !plugin_info.version.nil? && has_kpm_plugin %>
                           <%= link_to '<i class="fa fa-eject"></i>'.html_safe, plugin_uninstall_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
                       <% end %>
                     </li>

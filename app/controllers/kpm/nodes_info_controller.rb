@@ -2,6 +2,7 @@ require 'kpm/client'
 
 module KPM
   class NodesInfoController < EngineController
+    helper :all
     include ActionController::Live
 
     def index

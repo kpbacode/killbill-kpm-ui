@@ -22,11 +22,13 @@
 
   </div>
 
-  <div class="column-block">
+  <% if is_kpm_plugin_installed?(@nodes_info) %>
+    <div class="column-block">
 
-    <h1><%= link_to 'Install new plugin', plugins_path %></h1>
+      <h1><%= link_to 'Install new plugin', plugins_path %></h1>
 
-  </div>
+    </div>
+  <% end %>
 </div>
 
 <%= javascript_tag do %>
