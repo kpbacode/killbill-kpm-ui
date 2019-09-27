@@ -21,6 +21,8 @@ module KPM
           end
         end
       end
+
+      @kb_host = params[:kb_host] || KillBillClient::API.base_uri
     end
 
     def refresh
@@ -33,7 +35,7 @@ module KPM
         sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => "refresh")
 
         # Kill Bill -> Kaui
-        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse)
+        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host])
 
         i = 0
         # We force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)

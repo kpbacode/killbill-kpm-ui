@@ -16,8 +16,10 @@ module Killbill
           JSON.parse(response.body)
         end
 
-        def stream_osgi_logs(writer, options = {})
-          SSE::Client.new(KillBillClient::API.base_uri + KILLBILL_OSGI_LOGGER_PREFIX) do |client|
+        def stream_osgi_logs(writer, host)
+          url = host
+          url = "http://#{url}" unless url.starts_with?('http:')
+          SSE::Client.new(url + KILLBILL_OSGI_LOGGER_PREFIX) do |client|
             client.on_event do |event|
               writer.write(event.data)
             end

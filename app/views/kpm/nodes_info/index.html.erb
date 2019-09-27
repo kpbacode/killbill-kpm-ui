@@ -3,7 +3,7 @@
   <div class="column-block">
 
     <h1>Configured instances
-      <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style =>"display: none;") %>
+      <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style => "display: none;") %>
     </h1>
 
     <div id="nodes-table-wrapper">
@@ -15,6 +15,15 @@
   <div class="column-block">
 
     <h1>Logs</h1>
+
+    <%= form_tag url_for, :method => 'get', :format => :js, :class => 'form-horizontal' do %>
+      <div id="logs-form">
+        <div class="form-inline">
+          <%= text_field_tag :kb_host, @kb_host, :class => 'form-control' %>
+          <%= button_tag '', :type => 'submit', :class => 'glyphicon glyphicon-search' %>
+        </div>
+      </div>
+    <% end %>
 
     <div id="logs-table-wrapper">
       <%= render :partial => 'kpm/nodes_info/logs_table' %>
@@ -33,7 +42,7 @@
 
 <%= javascript_tag do %>
   $(document).ready(function() {
-    refreshLogs('<%= nodes_info_refresh_path(:format => :js) %>');
+    refreshLogs('<%= nodes_info_refresh_path(:kb_host => @kb_host, :format => :js) %>');
 
     $('.plugin-link').one('ajax:beforeSend', function() {
       // Prevent other clicks
