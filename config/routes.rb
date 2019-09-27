@@ -1,5 +1,6 @@
-KPM::Engine.routes.draw do
+# frozen_string_literal: true
 
+KPM::Engine.routes.draw do
   root to: 'nodes_info#index'
 
   resources :nodes_info, :only => [:index]
@@ -14,5 +15,4 @@ KPM::Engine.routes.draw do
     match '/plugin/stop' => 'nodes_info#stop_plugin', :via => :post, :as => 'plugin_stop'
     match '/plugin/restart' => 'nodes_info#restart_plugin', :via => :post, :as => 'plugin_restart'
   end
-
 end

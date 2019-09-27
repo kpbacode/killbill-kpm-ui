@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'kpm/client'
 
 module KPM
@@ -11,6 +13,7 @@ module KPM
       # For convenience, put pure OSGI bundles at the bottom
       @nodes_info.each do |node_info|
         next if node_info.plugins_info.nil?
+
         node_info.plugins_info.sort! do |a, b|
           if osgi_bundle?(a) && !osgi_bundle?(b)
             1
@@ -26,13 +29,13 @@ module KPM
     end
 
     def refresh
-      response.headers["Content-Type"] = "text/event-stream"
+      response.headers['Content-Type'] = 'text/event-stream'
 
       sse = nil
       sse_client = nil
       begin
         # Kaui -> Browser
-        sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => "refresh")
+        sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => 'refresh')
 
         # Kill Bill -> Kaui
         sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host])
@@ -51,7 +54,7 @@ module KPM
         begin
           begin
             sse_client.close unless sse_client.nil?
-          rescue
+          rescue StandardError
             # ignored
           end
           sse.close unless sse.nil?
@@ -70,7 +73,7 @@ module KPM
 
     def install_plugin
       command_properties = [
-          build_node_command_property('forceDownload', params[:force_download] == '1')
+        build_node_command_property('forceDownload', params[:force_download] == '1')
       ]
       trigger_node_plugin_command('INSTALL_PLUGIN', command_properties)
 
@@ -124,7 +127,7 @@ module KPM
       node_command.node_command_type = command_type
       node_command.node_command_properties = command_properties
 
-      # TODO Can we actually use node_name?
+      # TODO: Can we actually use node_name?
       local_node_only = false
 
       ::KillBillClient::Model::NodesInfo.trigger_node_command(node_command,

@@ -31,7 +31,7 @@
 
   </div>
 
-  <% if is_kpm_plugin_installed?(@nodes_info) %>
+  <% if kpm_plugin_installed?(@nodes_info) %>
     <div class="column-block">
 
       <h1><%= link_to 'Install new plugin', plugins_path %></h1>

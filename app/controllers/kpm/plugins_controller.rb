@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'kpm/client'
 
 module KPM
   class PluginsController < EngineController
-
     def index
       nodes_by_kb_version, @kb_version = killbill_version
       @warning_message = ''
@@ -12,12 +13,12 @@ module KPM
       else
         begin
           plugins = ::Killbill::KPM::KPMClient.get_available_plugins(true, options_for_klient)
-        rescue => e
+        rescue StandardError => e
           # No connectivity, GitHub down, ...
           Rails.logger.warn("Unable to get latest plugins, trying built-in directory: #{e.inspect}")
           plugins = ::Killbill::KPM::KPMClient.get_available_plugins(false, options_for_klient)
         end
-        plugins.select! { |plugin_key, info| info['versions'].keys.include?(@kb_version) }
+        plugins.select! { |_plugin_key, info| info['versions'].keys.include?(@kb_version) }
       end
       @plugins = Hash[plugins.sort]
     end
@@ -43,6 +44,5 @@ module KPM
       end
       [nodes_by_kb_version, first_node_version.scan(/(\d+\.\d+)(\.\d)?/).flatten[0]]
     end
-
   end
 end

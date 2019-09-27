@@ -9,7 +9,7 @@
   </tr>
   </thead>
   <tbody>
-  <%- has_kpm_plugin = is_kpm_plugin_installed?(nodes_info) %>
+  <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
   <% nodes_info.each do |node_info| %>
       <tr>
         <td><%= node_info.node_name %></td>
