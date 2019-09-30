@@ -42,7 +42,7 @@
 
 <%= javascript_tag do %>
   $(document).ready(function() {
-    refreshLogs('<%= nodes_info_refresh_path(:kb_host => @kb_host, :format => :js) %>');
+    refreshLogs('<%= nodes_info_refresh_path(:kb_host => @kb_host, :last_event_id => @last_event_id, :format => :js) %>');
 
     $('.plugin-link').one('ajax:beforeSend', function() {
       // Prevent other clicks

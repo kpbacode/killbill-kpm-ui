@@ -26,11 +26,13 @@ module KPM
       end
 
       @kb_host = params[:kb_host] || KillBillClient::API.base_uri
+      @last_event_id = params[:last_event_id]
     end
 
     def refresh
       response.headers['Content-Type'] = 'text/event-stream'
 
+      last_event_id_ref = Concurrent::AtomicReference.new(request.headers['Last-Event-Id'] || params[:last_event_id])
       sse = nil
       sse_client = nil
       begin
@@ -38,14 +40,15 @@ module KPM
         sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => 'refresh')
 
         # Kill Bill -> Kaui
-        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host])
+        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host], last_event_id_ref)
 
         i = 0
         # We force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
         while i < 6 # 30s
           i += 1
           # Keep the thread alive (Kill Bill should send us a heartbeat as well though)
-          sse.write('heartbeat')
+          # Note that we set the id as the last log id, so that we can easily resume
+          sse.write('heartbeat', :id => last_event_id_ref.get)
           sleep 5
         end
       rescue ActionController::Live::ClientDisconnected
