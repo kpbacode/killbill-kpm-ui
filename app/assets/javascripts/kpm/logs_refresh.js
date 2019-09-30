@@ -1,4 +1,9 @@
 function refreshLogLine(log) {
+    var table = window.logsDataTable;
+    if (table === null) {
+        return;
+    }
+
     var levelLabel = 'success';
     if (log['level'] === 'ERROR') {
         levelLabel = 'danger';
@@ -22,19 +27,15 @@ function refreshLogLine(log) {
             )
         );
 
-    var tableRows = $("#logs-table tr");
-    if (tableRows.length === 2) {
-        $("#logs-table tr .dataTables_empty").remove()
+    // Enforce ordering on refresh to remove oldest entry (expected at the bottom)
+    table.order([0, 'desc']).draw();
+
+    // length needs to match pageLength in initializer
+    if (table.column(0).data().length >= 100) {
+        table.row($('tr:last')).remove();
     }
-    if (tableRows.length > 1) {
-        $("#logs-table > tbody > tr:first").before(newRow);
-    } else {
-        // Shouldn't happen?
-        $("#logs-table > tbody").append(newRow);
-    }
-    if (tableRows.length >= 50) {
-        $('#logs-table tr:last').remove();
-    }
+
+    table.rows.add(newRow).draw();
 }
 
 function refreshLogs(url) {

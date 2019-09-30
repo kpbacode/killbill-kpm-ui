@@ -12,14 +12,15 @@
 
 <%= javascript_tag do %>
   $(document).ready(function() {
-    $('#logs-table').dataTable({
+    window.logsDataTable = $('#logs-table').DataTable({
       "columns": [
         { "width": "165px" }, /* ISO String is constant in width */
         { "width": "60px" },  /* Log levels are bounded in width */
         null,
       ],
-      "dom": "<'row'r>t<'row'<'col-md-6'><'col-md-6'>>",
-      "ordering": false
+      "dom": "<'row'<'col-md-6'><'col-md-6'f>>t<'row'<'col-md-6'><'col-md-6'>>",
+      "ordering": true,
+      "pageLength": 100
     });
   });
 <% end %>
