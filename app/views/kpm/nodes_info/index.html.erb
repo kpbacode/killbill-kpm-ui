@@ -16,17 +16,8 @@
 
     <h1>Logs</h1>
 
-    <%= form_tag url_for, :method => 'get', :format => :js, :class => 'form-horizontal' do %>
-      <div id="logs-form">
-        <div class="form-inline">
-          <%= text_field_tag :kb_host, @kb_host, :class => 'form-control' %>
-          <%= button_tag '', :type => 'submit', :class => 'glyphicon glyphicon-search' %>
-        </div>
-      </div>
-    <% end %>
-
     <div id="logs-table-wrapper">
-      <%= render :partial => 'kpm/nodes_info/logs_table' %>
+      <%= render :partial => 'kpm/nodes_info/logs_table', :locals => {:kb_host => @kb_host} %>
     </div>
 
   </div>
