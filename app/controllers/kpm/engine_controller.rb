@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module KPM
   class EngineController < ApplicationController
-
     layout :get_layout
 
     def get_layout
@@ -17,13 +18,12 @@ module KPM
     def options_for_klient
       user = current_tenant_user
       {
-          :username => user[:username],
-          :password => user[:password],
-          :session_id => user[:session_id],
-          :api_key => user[:api_key],
-          :api_secret => user[:api_secret]
+        :username => user[:username],
+        :password => user[:password],
+        :session_id => user[:session_id],
+        :api_key => user[:api_key],
+        :api_secret => user[:api_secret]
       }
     end
-
   end
 end

@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 require 'kpm/client'
 
 module KPM
   class NodesInfoController < EngineController
+    helper :all
+    include ActionController::Live
 
     def index
       @nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
@@ -9,6 +13,7 @@ module KPM
       # For convenience, put pure OSGI bundles at the bottom
       @nodes_info.each do |node_info|
         next if node_info.plugins_info.nil?
+
         node_info.plugins_info.sort! do |a, b|
           if osgi_bundle?(a) && !osgi_bundle?(b)
             1
@@ -20,17 +25,58 @@ module KPM
         end
       end
 
-      @logs = ::Killbill::KPM::KPMClient.get_osgi_logs(options_for_klient).reverse
+      @kb_host = params[:kb_host] || KillBillClient::API.base_uri
+      @last_event_id = params[:last_event_id]
+    end
 
-      respond_to do |format|
-        format.html
-        format.js
+    def refresh
+      response.headers['Content-Type'] = 'text/event-stream'
+
+      last_event_id_ref = Concurrent::AtomicReference.new(request.headers['Last-Event-Id'] || params[:last_event_id])
+      sse = nil
+      sse_client = nil
+      begin
+        # Kaui -> Browser
+        sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => 'refresh')
+
+        # Kill Bill -> Kaui
+        sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host], last_event_id_ref)
+
+        i = 0
+        # We force the browser to reconnect periodically (ensures clients don't block the server shutdown sequence)
+        while i < 6 # 30s
+          i += 1
+          # Keep the thread alive (Kill Bill should send us a heartbeat as well though)
+          # Note that we set the id as the last log id, so that we can easily resume
+          sse.write('heartbeat', :id => last_event_id_ref.get)
+          sleep 5
+        end
+      rescue ActionController::Live::ClientDisconnected
+        # ignored
+      ensure
+        begin
+          begin
+            sse_client.close unless sse_client.nil?
+          rescue StandardError
+            # ignored
+          end
+          sse.close unless sse.nil?
+        ensure
+          # Clear dead DB connections
+          # Very lame, but I couldn't do better... Rails will checkout a DB connection
+          # whenever a new Thread is spawn and ActiveRecord::Base.clear_active_connections!
+          # didn't seem to do the trick: the number of active and dead connections kept growing:
+          #     connections = ActiveRecord::Base.connection_pool.instance_eval { @connections }
+          #     busy = connections.count { |c| c.in_use? }
+          #     dead = connections.count { |c| c.in_use? && !c.owner.alive? }
+          ActiveRecord::Base.connection_pool.reap
+        end
       end
     end
 
     def install_plugin
       command_properties = [
-          build_node_command_property('forceDownload', params[:force_download] == '1')
+        build_node_command_property('forceDownload', params[:force_download] == '1')
       ]
       trigger_node_plugin_command('INSTALL_PLUGIN', command_properties)
 
@@ -70,7 +116,7 @@ module KPM
 
     private
 
-    def trigger_node_plugin_command(command_type, command_properties=[])
+    def trigger_node_plugin_command(command_type, command_properties = [])
       command_properties << build_node_command_property('pluginKey', params[:plugin_key])
       command_properties << build_node_command_property('pluginName', params[:plugin_name])
       command_properties << build_node_command_property('pluginVersion', params[:plugin_version])
@@ -78,13 +124,13 @@ module KPM
       trigger_node_command(command_type, command_properties)
     end
 
-    def trigger_node_command(command_type, command_properties=[])
+    def trigger_node_command(command_type, command_properties = [])
       node_command = ::KillBillClient::Model::NodeCommandAttributes.new
       node_command.is_system_command_type = true
       node_command.node_command_type = command_type
       node_command.node_command_properties = command_properties
 
-      # TODO Can we actually use node_name?
+      # TODO: Can we actually use node_name?
       local_node_only = false
 
       ::KillBillClient::Model::NodesInfo.trigger_node_command(node_command,

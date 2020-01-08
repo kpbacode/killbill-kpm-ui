@@ -2,7 +2,9 @@
 
   <div class="column-block">
 
-    <h1>Configured instances</h1>
+    <h1>Configured instances
+      <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style => "display: none;") %>
+    </h1>
 
     <div id="nodes-table-wrapper">
       <%= render :partial => 'kpm/nodes_info/nodes_table', :locals => {:nodes_info => @nodes_info} %>
@@ -12,39 +14,28 @@
 
   <div class="column-block">
 
-    <h1><%= link_to 'Install new plugin', plugins_path %></h1>
-
-  </div>
-
-  <div class="column-block">
-
     <h1>Logs</h1>
 
     <div id="logs-table-wrapper">
-      <%= render :partial => 'kpm/nodes_info/logs_table', :locals => {:logs => @logs} %>
+      <%= render :partial => 'kpm/nodes_info/logs_table', :locals => {:kb_host => @kb_host} %>
     </div>
 
   </div>
 
+  <% if kpm_plugin_installed?(@nodes_info) %>
+    <div class="column-block">
+
+      <h1><%= link_to 'Install new plugin', plugins_path %></h1>
+
+    </div>
+  <% end %>
 </div>
 
 <%= javascript_tag do %>
   $(document).ready(function() {
-    scheduleRefresh();
-  });
-
-  function scheduleRefresh() {
-    var timer = setTimeout(refreshAll, 1500);
-
-    // Stop refreshing when user clicks through logs
-    $('#logs-table_wrapper a').one('click', function() {
-      clearTimeout(timer);
-    });
+    refreshLogs('<%= nodes_info_refresh_path(:kb_host => @kb_host, :last_event_id => @last_event_id, :format => :js) %>');
 
     $('.plugin-link').one('ajax:beforeSend', function() {
-      // Disable the refresh
-      clearTimeout(timer);
-
       // Prevent other clicks
       $('.plugin-link').removeAttr('data-remote')
                        .removeAttr('data-method')
@@ -53,16 +44,15 @@
       // Spin
       $(this).children().addClass('fa-spin');
     });
-
     $('.plugin-link').one('ajax:complete', function() {
       // Delay a bit, to give time for the plugin state to change before the next refresh
-      setTimeout(refreshAll, 6000);
+      setTimeout(fakeOperationComplete, 6000);
     });
-  }
 
-  function refreshAll() {
-    $.ajax({
-      url: "<%= nodes_info_index_path(:format => :js) %>"
-    });
-  }
+    function fakeOperationComplete() {
+      $('.plugin-link').children().removeClass('fa-spin');
+      $('#nodes-table-wrapper').fadeTo("slow", 0.5);
+      $('#reload-page').fadeIn("slow");
+    }
+  });
 <% end %>
