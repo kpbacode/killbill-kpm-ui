@@ -9,7 +9,7 @@ module KPM
         next if (node_info.plugins_info || []).empty?
 
         node_info.plugins_info.each do |plugin_info|
-          return true if plugin_info.plugin_name == 'kpm-plugin' || plugin_info.plugin_name == 'killbill-kpm'
+          return true if plugin_info.plugin_name == 'org.kill-bill.billing.killbill-platform-osgi-bundles-kpm'
         end
       end
       false
