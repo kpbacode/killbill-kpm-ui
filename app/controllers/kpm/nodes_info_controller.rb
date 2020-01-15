@@ -117,6 +117,7 @@ module KPM
     private
 
     def trigger_node_plugin_command(command_type, command_properties = [])
+      # No need to pass kbVersion -- Kill Bill will figure it out
       command_properties << build_node_command_property('pluginKey', params[:plugin_key])
       command_properties << build_node_command_property('pluginName', params[:plugin_name])
       command_properties << build_node_command_property('pluginVersion', params[:plugin_version])
