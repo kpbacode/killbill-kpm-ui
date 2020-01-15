@@ -75,22 +75,7 @@ module KPM
     end
 
     def install_plugin
-      command_properties = [
-        build_node_command_property('forceDownload', params[:force_download] == '1')
-      ]
-      trigger_node_plugin_command('INSTALL_PLUGIN', command_properties)
-
-      redirect_to :action => :index
-    end
-
-    def install_plugin_from_fs
-      ::Killbill::KPM::KPMClient.install_plugin(params.require(:key),
-                                                params.require(:version),
-                                                params.require(:type),
-                                                params.require(:plugin).original_filename,
-                                                params.require(:plugin).read,
-                                                options_for_klient)
-
+      trigger_node_plugin_command('INSTALL_PLUGIN')
       redirect_to :action => :index
     end
 
@@ -121,6 +106,9 @@ module KPM
       command_properties << build_node_command_property('pluginKey', params[:plugin_key])
       command_properties << build_node_command_property('pluginName', params[:plugin_name])
       command_properties << build_node_command_property('pluginVersion', params[:plugin_version])
+      command_properties << build_node_command_property('pluginType', params[:plugin_type])
+      command_properties << build_node_command_property('pluginUri', params[:plugin_uri])
+      command_properties << build_node_command_property('forceDownload', params[:force_download] == '1')
 
       trigger_node_command(command_type, command_properties)
     end

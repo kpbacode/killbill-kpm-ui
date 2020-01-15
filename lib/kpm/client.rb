@@ -39,11 +39,6 @@ module Killbill
             end
           end
         end
-
-        def install_plugin(key, version, type, filename, plugin, options = {})
-          path = "#{KILLBILL_KPM_PREFIX}/plugins"
-          KillBillClient::API.post path, plugin, { :key => key, :version => version, :type => type, :filename => filename }, options.merge(:content_type => 'application/octet-stream')
-        end
       end
     end
   end
