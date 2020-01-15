@@ -4,6 +4,11 @@
 
     <h1>Configured instances
       <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style => "display: none;") %>
+      <% if kpm_plugin_installed?(@nodes_info) %>
+        <div class="pull-right">
+          <%= link_to 'Install new plugin', plugins_path %>
+        </div>
+      <% end %>
     </h1>
 
     <div id="nodes-table-wrapper">
@@ -21,14 +26,6 @@
     </div>
 
   </div>
-
-  <% if kpm_plugin_installed?(@nodes_info) %>
-    <div class="column-block">
-
-      <h1><%= link_to 'Install new plugin', plugins_path %></h1>
-
-    </div>
-  <% end %>
 </div>
 
 <%= javascript_tag do %>

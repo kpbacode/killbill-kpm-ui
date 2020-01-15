@@ -9,9 +9,9 @@ module Killbill
       KILLBILL_OSGI_LOGGER_PREFIX = '/plugins/killbill-osgi-logger'
 
       class << self
-        def get_available_plugins(latest = true, options = {})
+        def get_available_plugins(kb_version, latest = true, options = {})
           path = "#{KILLBILL_KPM_PREFIX}/plugins"
-          response = KillBillClient::API.get path, { :latest => latest }, options
+          response = KillBillClient::API.get path, { :kbVersion => kb_version, :latest => latest }, options
           JSON.parse(response.body)
         end
 
