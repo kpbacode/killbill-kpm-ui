@@ -3,35 +3,15 @@
     <thead>
     <tr>
       <th>Name</th>
-      <th>Type</th>
       <th>Version</th>
-      <th>Required configuration</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <% plugins.each do |name, details| %>
+    <% plugins.each do |name, version| %>
         <tr>
           <td><%= name %></td>
-          <td><%= details['type'] %></td>
-          <td>
-            <% unless details['versions'].nil? %>
-              <% details['versions'].each do |kb_version, plugin_version| %>
-                <% if kb_version.eql?(@kb_version) %>
-                  &ensp;<%= plugin_version %>
-                <% end %>
-              <% end %>
-            <% end %>
-          </td>
-          <td>
-            <% unless (details['require'] || []).empty? %>
-                <ul>
-                  <% details['require'].each do |property| %>
-                      <li><%= property %></li>
-                  <% end %>
-                </ul>
-            <% end %>
-          </td>
+          <td><%= version %></td>
           <td><%= link_to '<i class="fa fa-cloud-download"></i>'.html_safe, plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
         </tr>
     <% end %>

@@ -2,42 +2,39 @@
   <thead>
   <tr>
     <th>Time</th>
-    <th>Name</th>
     <th>Level</th>
     <th>Message</th>
   </tr>
   </thead>
   <tbody>
-  <% logs.each do |log| %>
-      <tr>
-        <td>
-          <% unless log['time'].blank? %>
-              <%= DateTime.strptime(log['time'].to_s, '%Q').strftime('%Y-%m-%d %H:%M:%S') %>
-          <% end %>
-        </td>
-        <td><%= log['name'] %></td>
-        <td>
-          <% if log['level'] == 'ERROR' %>
-              <span class="label label-danger"><%= log['level'] %></span>
-          <% elsif log['level'] == 'WARNING' %>
-              <span class="label label-warning"><%= log['level'] %></span>
-          <% else %>
-              <span class="label label-success"><%= log['level'] %></span>
-          <% end %>
-        </td>
-        <td><pre><%= log['message'] %></pre></td>
-      </tr>
-  <% end %>
   </tbody>
 </table>
 
+<%= form_tag url_for, :method => 'get', :format => :js, :id => 'kb_host-form', :class => 'form-horizontal', :style => 'display: none;' do %>
+  <div id="logs-form">
+    <div class="form-inline">
+      <%= text_field_tag :kb_host, kb_host, :class => 'form-control' %>
+      <%= button_tag '', :type => 'submit', :class => 'glyphicon glyphicon-search' %>
+    </div>
+  </div>
+<% end %>
+
 <%= javascript_tag do %>
   $(document).ready(function() {
-    $('#logs-table').dataTable({
-      "dom": "<'row'r>t<'row'<'col-md-6'i><'col-md-6'p>>",
-      "pagingType": "full_numbers",
-      "pageLength": 50,
-      "ordering": false
+    window.logsDataTable = $('#logs-table').DataTable({
+      "columns": [
+        { "width": "165px" }, /* ISO String is constant in width */
+        { "width": "60px" },  /* Log levels are bounded in width */
+        null,
+      ],
+      "dom": "<'row'<'col-md-6'><'col-md-6'f>>t<'row'<'col-md-6'><'col-md-6'>>",
+      "ordering": true,
+      "pageLength": 100
     });
+
+    var kbHostForm = $('#kb_host-form').detach();
+    var leftOfSearchBox = $("#logs-table_wrapper > div:nth-child(1) > div:nth-child(1)");
+    kbHostForm.appendTo(leftOfSearchBox);
+    kbHostForm.show();
   });
 <% end %>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Declare your gem's dependencies in kpm.gemspec.
@@ -11,3 +13,4 @@ gemspec
 # your gem to rubygems.org.
 
 #gem 'killbill-client', :github => 'killbill/killbill-client-ruby', :ref => 'master'
+#gem 'killbill-client', '3.2.0'
