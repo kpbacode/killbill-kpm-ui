@@ -2,7 +2,7 @@
     <div class="form-group">
       <%= label_tag :plugin_key, 'Plugin key', :class => 'col-sm-2 control-label' %>
       <div class="col-sm-9">
-        <%= text_field_tag :plugin_key, '', :class => 'form-control', :placeholder => 'Plugin key', :required => true %>
+        <%= text_field_tag :plugin_key, '', :class => 'form-control', :placeholder => 'Unique identifier for this plugin, e.g. myCompany:myPluginName', :required => true %>
       </div>
     </div>
     <div class="form-group">
@@ -14,7 +14,7 @@
     <div class="form-group">
       <%= label_tag :plugin_uri, 'URI', :class => 'col-sm-2 control-label' %>
       <div class="col-sm-9">
-        <%= text_field_tag :plugin_uri, '', :class => 'form-control', :placeholder => 'Plugin URI', :required => true %>
+        <%= text_field_tag :plugin_uri, '', :class => 'form-control', :placeholder => 'HTTP(S) url accessible from all Kill Bill nodes', :required => true %>
       </div>
     </div>
     <div class='form-group'>
