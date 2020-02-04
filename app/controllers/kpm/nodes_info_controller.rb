@@ -8,6 +8,8 @@ module KPM
     include ActionController::Live
 
     def index
+      @installing = !params[:i].blank?
+
       @nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
 
       # For convenience, put pure OSGI bundles at the bottom
@@ -76,7 +78,7 @@ module KPM
 
     def install_plugin
       trigger_node_plugin_command('INSTALL_PLUGIN')
-      redirect_to :action => :index
+      redirect_to nodes_info_index_path(:i => 1)
     end
 
     def uninstall_plugin
