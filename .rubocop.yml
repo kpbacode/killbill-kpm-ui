@@ -1,13 +1,23 @@
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   Exclude:
     - 'test/dummy/**/*'
     - 'app/controllers/kpm/engine_controller.rb' # Too much magic going on
 
-# RuboCop 0.69.0 dropped support for 2.2
-#AllCops:
-#  TargetRubyVersion: 2.2
 Gemspec/RequiredRubyVersion:
   Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
 # Alternative?
 Gemspec/RubyVersionGlobalsUsage:
@@ -16,7 +26,22 @@ Gemspec/RubyVersionGlobalsUsage:
 Layout/DefEndAlignment:
   AutoCorrect: true
 
-Lint/HandleExceptions:
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+Lint/DuplicateElsifCondition:
+  Enabled: true
+
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Lint/SuppressedException:
   AllowComments: true
 
 Metrics/AbcSize:
@@ -34,9 +59,6 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Enabled: false
 
-Metrics/LineLength:
-  Enabled: false
-
 Metrics/MethodLength:
   Enabled: false
 
@@ -50,11 +72,7 @@ Metrics/PerceivedComplexity:
   Enabled: false
 
 Security/YAMLLoad:
-  Enabled: false
-
-# We must support old Rubies
-Style/BracesAroundHashParameters:
-  Enabled: false
+  Enabled: true
 
 Style/Documentation:
   Enabled: false
@@ -62,10 +80,62 @@ Style/Documentation:
 Style/EmptyElse:
   EnforcedStyle: empty
 
-# We must support old Rubies
 Style/HashSyntax:
-  Enabled: false
+  Enabled: true
 
-# Ruby 2.3+ only
+Style/NumericPredicate:
+  Enabled: true
+
 Style/SafeNavigation:
-  Enabled: false
+  Enabled: true
+
+Style/GuardClause:
+  Enabled: true
+
+Style/AccessorGrouping:
+  Enabled: true
+
+Style/ArrayCoercion:
+  Enabled: true
+
+Style/BisectedAttrAccessor:
+  Enabled: true
+
+Style/CaseLikeIf:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Style/HashAsLastArrayItem:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashLikeCase:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/RedundantAssignment:
+  Enabled: true
+
+Style/RedundantFetchBlock:
+  Enabled: true
+
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Enabled: true
+
+Style/SlicingWithRange:
+  Enabled: true

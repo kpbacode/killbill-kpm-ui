@@ -14,27 +14,27 @@ module Killbill
           # (we rarely deploy SNAPSHOT jars)
           captures = kb_version_maybe_snapshot.scan(/0.(\d+)(\.)?(\d+)?(-SNAPSHOT)?/)
           # [["20", ".", "1", "-SNAPSHOT"]]
-          if !captures.nil? && !captures.first.nil? && !captures.first[3].nil?
-            if captures.first[2].to_i > 0
-              kb_version = '0.' + captures.first[0] + '.' + (captures.first[2].to_i - 1).to_s
-            else
-              kb_version = '0.' + (captures.first[0].to_i - 1).to_s + '.0'
-            end
-          else
-            kb_version = kb_version_maybe_snapshot
-          end
+          kb_version = if !captures.nil? && !captures.first.nil? && !captures.first[3].nil?
+                         if captures.first[2].to_i.positive?
+                           '0.' + captures.first[0] + '.' + (captures.first[2].to_i - 1).to_s
+                         else
+                           '0.' + (captures.first[0].to_i - 1).to_s + '.0'
+                         end
+                       else
+                         kb_version_maybe_snapshot
+                       end
 
           path = "#{KILLBILL_KPM_PREFIX}/plugins"
-          response = KillBillClient::API.get path, { :kbVersion => kb_version, :latest => latest }, options
+          response = KillBillClient::API.get path, { kbVersion: kb_version, latest: latest }, options
           JSON.parse(response.body)
         end
 
         def stream_osgi_logs(writer, host, last_event_id_ref)
           url = host
           url = "http://#{url}" unless url.starts_with?('http:')
-          SSE::Client.new(url + KILLBILL_OSGI_LOGGER_PREFIX, :last_event_id => last_event_id_ref.get, :logger => Rails.logger) do |client|
+          SSE::Client.new(url + KILLBILL_OSGI_LOGGER_PREFIX, last_event_id: last_event_id_ref.get, logger: Rails.logger) do |client|
             client.on_event do |event|
-              writer.write(event.data, :id => event.id)
+              writer.write(event.data, id: event.id)
               last_event_id_ref.set(event.id)
             end
           end

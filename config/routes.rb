@@ -3,8 +3,8 @@
 KPM::Engine.routes.draw do
   root to: 'nodes_info#index'
 
-  resources :nodes_info, :only => [:index]
-  resources :plugins, :only => [:index]
+  resources :nodes_info, only: [:index]
+  resources :plugins, only: [:index]
 
   scope '/nodes_info' do
     match '/refresh' => 'nodes_info#refresh', :via => :get, :as => 'nodes_info_refresh'

@@ -39,7 +39,7 @@ module KPM
       sse_client = nil
       begin
         # Kaui -> Browser
-        sse = ActionController::Live::SSE.new(response.stream, :retry => 300, :event => 'refresh')
+        sse = ActionController::Live::SSE.new(response.stream, retry: 300, event: 'refresh')
 
         # Kill Bill -> Kaui
         sse_client = ::Killbill::KPM::KPMClient.stream_osgi_logs(sse, params[:kb_host], last_event_id_ref)
@@ -50,7 +50,7 @@ module KPM
           i += 1
           # Keep the thread alive (Kill Bill should send us a heartbeat as well though)
           # Note that we set the id as the last log id, so that we can easily resume
-          sse.write('heartbeat', :id => last_event_id_ref.get)
+          sse.write('heartbeat', id: last_event_id_ref.get)
           sleep 5
         end
       rescue ActionController::Live::ClientDisconnected
@@ -58,11 +58,11 @@ module KPM
       ensure
         begin
           begin
-            sse_client.close unless sse_client.nil?
+            sse_client&.close
           rescue StandardError
             # ignored
           end
-          sse.close unless sse.nil?
+          sse&.close
         ensure
           # Clear dead DB connections
           # Very lame, but I couldn't do better... Rails will checkout a DB connection
@@ -78,7 +78,7 @@ module KPM
 
     def install_plugin
       trigger_node_plugin_command('INSTALL_PLUGIN')
-      redirect_to nodes_info_index_path(:i => 1)
+      redirect_to nodes_info_index_path(i: 1)
     end
 
     def uninstall_plugin
