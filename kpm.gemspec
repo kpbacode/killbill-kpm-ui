@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-datatables-rails'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'ld-eventsource'
-  s.add_dependency 'rails', '~> 6.0.6'
+  s.add_dependency 'rails', '~> 6.1.7'
   s.add_dependency 'sass-rails'
   # See https://github.com/seyhunak/twitter-bootstrap-rails/issues/897
   s.add_dependency 'font-awesome-rails'
